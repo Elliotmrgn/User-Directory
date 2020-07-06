@@ -1,39 +1,64 @@
 import React from "react";
-import { useTable } from "react-table";
+import { useTable, useSortBy } from "react-table";
 
 const Table = () => {
-
     const columns = React.useMemo(
         () => [
           {
-            Header: "Column 1",
-            accessor: "col1", // accessor is the "key" in the data
+            Header: 'Name',
+            columns: [
+              {
+                Header: 'First Name',
+                accessor: 'firstName',
+              },
+              {
+                Header: 'Last Name',
+                accessor: 'lastName',
+              },
+            ],
           },
           {
-            Header: "Column 2",
-            accessor: "col2",
+            Header: 'Info',
+            columns: [
+              {
+                Header: 'Age',
+                accessor: 'age',
+              },
+              {
+                Header: 'Visits',
+                accessor: 'visits',
+              },
+              {
+                Header: 'Status',
+                accessor: 'status',
+              },
+              {
+                Header: 'Profile Progress',
+                accessor: 'progress',
+              },
+            ],
           },
         ],
         []
-      );
+      )
 
-      const data = React.useMemo(
-        () => [
-          {
-            col1: "Hello",
-            col2: "World",
-          },
-          {
-            col1: "react-table",
-            col2: "rocks",
-          },
-          {
-            col1: "whatever",
-            col2: "you want",
-          },
-        ],
-        []
-        );
+  const data = React.useMemo(
+    () => [
+      {
+        firstName: "Bill",
+        lastName: "Gates",
+      },
+      {
+        firstName: "John",
+        lastName: "Redcorn",
+      },
+      {
+        firstName: "Tom",
+        lastName: "Smith",
+      },
+    ],
+    []
+  );
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
@@ -41,33 +66,51 @@ const Table = () => {
     headerGroups,
     rows,
     prepareRow,
-  } = useTable({ columns, data });
+  } = useTable({ columns, data }, useSortBy);
 
   return (
-    <table {...getTableProps()}>
-      <thead>
-        {headerGroups.map((headerGroup) => (
-          <tr {...headerGroup.getHeaderGroupProps()}>
-            {headerGroup.headers.map((column) => (
-              <th {...column.getHeaderProps()}>{column.render("Header")}</th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody {...getTableBodyProps()}>
-        {rows.map((row) => {
-          prepareRow(row);
-          return (
-            <tr {...row.getRowProps()}>
-              {row.cells.map((cell) => {
-                return <td {...cell.getCellProps()}>{cell.render("Cell")}</td>;
-              })}
+    <>
+      <table {...getTableProps()}>
+        <thead>
+          {headerGroups.map(headerGroup => (
+            <tr {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map(column => (
+                // Add the sorting props to control sorting. For this example
+                // we can add them into the header props
+                <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  {column.render('Header')}
+                  {/* Add a sort direction indicator */}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ''}
+                  </span>
+                </th>
+              ))}
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  );
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map(
+            (row, i) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map(cell => {
+                    return (
+                      <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    )
+                  })}
+                </tr>
+              )}
+          )}
+        </tbody>
+      </table>
+      <br />
+    </>
+  )
 };
 
 export default Table;
