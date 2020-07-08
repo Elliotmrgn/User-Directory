@@ -6,11 +6,11 @@ const Columns = () =>{
             columns: [
                 {
                     Header: "First Name",
-                    accessor: "",
+                    accessor: "name.first",
                 },
                 {
                     Header: "Last Name",
-                    accessor: "lastName",
+                    accessor: "name.last",
                 },
             ],
         },
@@ -23,7 +23,7 @@ const Columns = () =>{
                 },
                 {
                     Header: "Username",
-                    accessor: "username",
+                    accessor: "login.username",
                 },
             ],
         },

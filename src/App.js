@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import "./App.css";
 import Table from "./Components/Table";
-import Styles from "./Components/Styles";
-import fillData from "./utils/Data";
 import Columns from "./utils/Columns"
 
+import axios from 'axios';
+
 const App = () => {
-  const data = React.useMemo(() => fillData(), []);
-  console.log("App -> data", data)
-  const columns = React.useMemo(()=> Columns(), [])
-  console.log("App -> columns", columns)
-  return <Table columns={columns} data={data}/>;
+  const [data, setData] = useState([])
+
+  useEffect(() => {
+    (async () => {
+      const result = await axios.get("https://randomuser.me/api/?nat=us&results=20");
+      setData(result.data.results);
+    })();
+  }, []);
+
+
+  const columns = useMemo(
+    () => Columns(), [])
+
+  return (
+  <div className="App">
+    <Table columns={columns} data={data} />
+    </div>
+    );
 };
 
 export default App;
